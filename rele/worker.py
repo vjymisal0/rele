@@ -13,9 +13,9 @@ from google.cloud.pubsub_v1.futures import Future
 from google.cloud.pubsub_v1.subscriber.scheduler import ThreadScheduler
 
 from .client import Subscriber
+from .dead_letter_policy import DeadLetterPolicy
 from .middleware import run_middleware_hook
 from .retry_policy import RetryPolicy
-from .dead_letter_policy import DeadLetterPolicy
 from .subscription import Callback, Subscription
 
 if TYPE_CHECKING:

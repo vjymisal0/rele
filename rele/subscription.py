@@ -5,9 +5,9 @@ from collections.abc import Callable, Iterable
 from inspect import getfullargspec, getmodule
 from typing import Any
 
+from .dead_letter_policy import DeadLetterPolicy
 from .middleware import run_middleware_hook
 from .retry_policy import RetryPolicy
-from .dead_letter_policy import DeadLetterPolicy
 
 FilterBy = Callable[..., bool]
 

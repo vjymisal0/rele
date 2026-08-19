@@ -378,6 +378,7 @@ class TestCreateAndRun:
             60,
             2,
             RetryPolicy(5, 30),
+            None,
         )
         mock_worker.return_value.run_forever.assert_called_once_with()
 
@@ -401,5 +402,6 @@ class TestCreateAndRun:
             "some-region",
             {"api_endpoint": "custom-api.interconnect.example.com"},
             60,
+            None,
             None,
         )

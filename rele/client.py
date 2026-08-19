@@ -15,9 +15,9 @@ from google.protobuf import duration_pb2
 from google.pubsub_v1 import MessageStoragePolicy
 from google.pubsub_v1 import RetryPolicy as GCloudRetryPolicy
 
+from rele.dead_letter_policy import DeadLetterPolicy
 from rele.middleware import run_middleware_hook
 from rele.retry_policy import RetryPolicy
-from rele.dead_letter_policy import DeadLetterPolicy
 from rele.subscription import Subscription
 
 logger = logging.getLogger(__name__)
@@ -162,7 +162,9 @@ class Subscriber:
 
         dead_letter_policy = subscription.dead_letter_policy or self._dead_letter_policy
         if dead_letter_policy:
-            request["dead_letter_policy"] = self._build_gcloud_dead_letter_policy(dead_letter_policy)
+            request["dead_letter_policy"] = self._build_gcloud_dead_letter_policy(
+                dead_letter_policy
+            )
 
         self._client.create_subscription(request=request)
 
@@ -183,11 +185,14 @@ class Subscriber:
 
         if retry_policy:
             paths.append("retry_policy")
-            gcloud_subscription.retry_policy = self._build_gcloud_retry_policy(retry_policy)
+            gcloud_subscription.retry_policy = self._build_gcloud_retry_policy(
+                retry_policy
+            )
 
         if dead_letter_policy:
             paths.append("dead_letter_policy")
-            gcloud_subscription.dead_letter_policy = self._build_gcloud_dead_letter_policy(dead_letter_policy)
+            build_dlp = self._build_gcloud_dead_letter_policy
+            gcloud_subscription.dead_letter_policy = build_dlp(dead_letter_policy)
 
         update_mask = FieldMask(paths=paths)
 
@@ -209,9 +214,7 @@ class Subscriber:
             minimum_backoff=minimum_backoff, maximum_backoff=maximum_backoff
         )
 
-    def _build_gcloud_dead_letter_policy(
-        self, rele_dead_letter_policy: Any
-    ) -> Any:
+    def _build_gcloud_dead_letter_policy(self, rele_dead_letter_policy: Any) -> Any:
         # Assuming we need to prefix the project if it's not a full path?
         # Actually Google Cloud pubsub expects the full topic path.
         # But wait, if dead_letter_topic is just a topic name, we need to format it.
