@@ -12,10 +12,10 @@ from .client import (
     DEFAULT_ENCODER_PATH,
     get_google_defaults,
 )
+from .dead_letter_policy import DeadLetterPolicy
 from .middleware import default_middleware, register_middleware
 from .publishing import init_global_publisher
 from .retry_policy import RetryPolicy
-from .dead_letter_policy import DeadLetterPolicy
 from .subscription import Subscription
 
 
@@ -55,7 +55,9 @@ class Config:
         )
         self._credentials: Any = None
         self.retry_policy: RetryPolicy | None = setting.get("DEFAULT_RETRY_POLICY")
-        self.dead_letter_policy: DeadLetterPolicy | None = setting.get("DEFAULT_DEAD_LETTER_POLICY")
+        self.dead_letter_policy: DeadLetterPolicy | None = setting.get(
+            "DEFAULT_DEAD_LETTER_POLICY"
+        )
         self.client_options: dict[str, Any] | None = setting.get("CLIENT_OPTIONS")
 
     @property

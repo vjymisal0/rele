@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class DeadLetterPolicy:
     dead_letter_topic: str
