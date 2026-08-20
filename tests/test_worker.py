@@ -11,6 +11,7 @@ from google.cloud.pubsub_v1.subscriber.futures import StreamingPullFuture
 from google.cloud.pubsub_v1.subscriber.scheduler import ThreadScheduler
 
 from rele import Subscriber, Worker, sub
+from rele.dead_letter_policy import DeadLetterPolicy
 from rele.middleware import register_middleware
 from rele.retry_policy import RetryPolicy
 from rele.subscription import Callback
@@ -404,4 +405,20 @@ class TestCreateAndRun:
             60,
             None,
             None,
+        )
+
+    def test_creates_subscriber_with_dead_letter_policy(
+        self, mock_subscriber, config_with_dead_letter_policy
+    ):
+        subscriptions = (sub_stub,)
+        create_and_run(subscriptions, config_with_dead_letter_policy)
+
+        mock_subscriber.assert_called_with(
+            "rele-test",
+            ANY,
+            "some-region",
+            None,
+            60,
+            None,
+            DeadLetterPolicy("dlp-topic", 5),
         )
